@@ -1,0 +1,19 @@
+{
+  "name": "lugnload",
+  "version": "1.0.0",
+  "description": "LugNLoad is a peer-to-peer platform that connects people who need to move their belongings with drivers who have extra space in their vehicles. This can be a more affordable and convenient option than traditional moving companies.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eldhosempeter07/LugNLoad.git"
+  },
+  "author": "LugNLoad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eldhosempeter07/LugNLoad/issues"
+  },
+  "homepage": "https://github.com/eldhosempeter07/LugNLoad#readme"
+}
