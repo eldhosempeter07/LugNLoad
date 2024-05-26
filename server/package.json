@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "LugNLoad is a peer-to-peer platform that connects people who need to move their belongings with drivers who have extra space in their vehicles. This can be a more affordable and convenient option than traditional moving companies.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/eldhosempeter07/LugNLoad/issues"
   },
-  "homepage": "https://github.com/eldhosempeter07/LugNLoad#readme"
+  "homepage": "https://github.com/eldhosempeter07/LugNLoad#readme",
+  "dependencies": {
+    "apollo-server-express": "^3.13.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "graphql": "^16.8.1",
+    "mongoose": "^8.4.0",
+    "nodemon": "^3.1.1"
+  }
 }
