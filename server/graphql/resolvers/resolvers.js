@@ -45,7 +45,7 @@ export const resolvers = {
       const postHauls = await PostHaul.find();
       return postHauls;
     },
-    getHaulPost: async (id) => {
+    getHaulPostByID: async (_, { id }) => {
       const postHaul = await PostHaul.findOne({ id });
       return postHaul;
     },
