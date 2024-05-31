@@ -1,7 +1,14 @@
+import Navbar from "./components/navbar";
+import "bootstrap/dist/css/bootstrap.min.css";
+import CreateHaulPost from "./pages/postHaul/createHaulPost";
+// import TripHistory from "./pages/postHaul/tripHistory";
+
 function App() {
   return (
     <>
-      <h1>Lug N Load</h1>
+      <Navbar />
+      <CreateHaulPost />
+      {/* <TripHistory /> */}
     </>
   );
 }
