@@ -31,8 +31,8 @@ code {
 }
 
 .primary-bordercolor {
-  border: groove 2px;
-  border-color: #08b480 #0074c3;
+  border: groove 3px;
+  border-color: #08b480;
 }
 
 /* Secondary */
