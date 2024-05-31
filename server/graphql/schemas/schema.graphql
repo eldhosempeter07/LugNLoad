@@ -1,0 +1,36 @@
+type HaulPost {
+  id: Int
+  origin: String
+  destination: String
+  date: GQLDate
+  time: String
+  vehicleType: String
+  shared: Boolean
+  seat: Boolean
+  message: String
+  created: GQLDate
+}
+
+input InputHaulPost {
+  id: Int
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  time: String
+  vehicleType: String
+  shared: Boolean
+  message: String
+  seat: Boolean
+}
+
+type Query {
+  getHaulPosts: [HaulPost!]!
+  getHaulPostByID(id: Int!): HaulPost!
+}
+
+type Mutation {
+  createHaulPost(haulPost: InputHaulPost!): HaulPost
+  removeHaulPost(id: Int!): HaulPost
+}
+
+scalar GQLDate
