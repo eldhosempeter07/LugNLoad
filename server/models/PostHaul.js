@@ -9,6 +9,7 @@ const PostHaulSchema = new Schema({
   date: { type: Date, required: true },
   time: { type: String, required: true },
   message: { type: String },
+  items: { type: Array, required: true },
   vehicleType: { type: String, required: true },
   shared: { type: Boolean, required: true },
   seat: { type: Boolean, required: true },

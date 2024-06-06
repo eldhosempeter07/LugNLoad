@@ -1,8 +1,25 @@
+type Item {
+  name: String
+  number: Int
+  length: Float
+  width: Float
+  height: Float
+}
+
+input ItemInput {
+  name: String
+  number: Int
+  length: Float
+  width: Float
+  height: Float
+}
+
 type HaulPost {
   id: Int
   origin: String
   destination: String
   date: GQLDate
+  items: [Item]
   time: String
   vehicleType: String
   shared: Boolean
@@ -16,6 +33,7 @@ input InputHaulPost {
   origin: String!
   destination: String!
   date: GQLDate!
+  items: [ItemInput]
   time: String
   vehicleType: String
   shared: Boolean
