@@ -3,6 +3,7 @@ import * as ReactDOM from "react-dom/client";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import App from "./App";
 import "./index.css";
+import { BrowserRouter } from "react-router-dom";
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_BACKEND_URL,
@@ -14,6 +15,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <ApolloProvider client={client}>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </ApolloProvider>
 );

@@ -31,6 +31,13 @@ export const GET_POSTHAUL_BY_ID = gql`
       seat
       message
       created
+      items {
+        name
+        number
+        length
+        width
+        height
+      }
     }
   }
 `;

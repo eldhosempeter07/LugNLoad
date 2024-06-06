@@ -1,3 +1,25 @@
+import axios from "axios";
+
+export const vehicleTypes = [
+  {
+    type: "Small Van",
+    maxDimensions: { length: 2.0, width: 1.2, height: 1.2 },
+  },
+  {
+    type: "Medium Van",
+    maxDimensions: { length: 2.5, width: 1.5, height: 1.5 },
+  },
+  {
+    type: "Large Van",
+    maxDimensions: { length: 3.0, width: 1.8, height: 1.8 },
+  },
+];
+
+export const radioOptions = [
+  { label: "Yes", value: true },
+  { label: "No", value: false },
+];
+
 export const getMinimumDate = () => {
   const now = new Date();
   const year = now.getFullYear();
@@ -47,4 +69,48 @@ export const convertTo12HourFormat = (time24) => {
   var time12 = hours + ":" + minutes + " " + suffix;
 
   return time12;
+};
+
+export const getCoordinates = async (location) => {
+  try {
+    const response = await axios.get(
+      "https://api.opencagedata.com/geocode/v1/json",
+      {
+        params: {
+          q: location,
+          key: process.env.REACT_APP_OPENCAGE_API_KEY,
+        },
+      }
+    );
+
+    const { lat, lng } = response.data.results[0].geometry;
+    return { lat, lng };
+  } catch (error) {
+    console.error("Error fetching geocoding data:", error);
+    return null;
+  }
+};
+
+export const findDistanceBtwnPoints = (coords1, coords2) => {
+  const toRad = (x) => (x * Math.PI) / 180;
+
+  const lat1 = coords1.lat;
+  const lon1 = coords1.lng;
+  const lat2 = coords2.lat;
+  const lon2 = coords2.lng;
+
+  const R = 6371; // Radius of the Earth in km
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c;
+  return distance; // Distance in km
 };
