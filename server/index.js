@@ -17,7 +17,6 @@ const typeDefs = fs.readFileSync(
 const server = new ApolloServer({ typeDefs, resolvers });
 
 server.start().then(function () {
-  // default cors true
   server.applyMiddleware({ app, path: "/graphql", cors: true });
 });
 
