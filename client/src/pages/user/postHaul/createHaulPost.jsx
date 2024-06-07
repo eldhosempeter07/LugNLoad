@@ -1,24 +1,27 @@
-// CreateHaulPost.js
 import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import { useMutation } from "@apollo/client";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { getMinimumDate, radioOptions, vehicleTypes } from "../../utils/utils";
-import ItemList from "../../components/itemList";
-import ItemForm from "../../components/itemForm";
-import VehicleTypeSelect from "../../components/vehicleTypeSelect";
-import LocationTypeahead from "../../components/locationTypeahead";
-import FormControl from "../../components/formControl";
-import FormCheck from "../../components/formRadio";
+import {
+  getMinimumDate,
+  radioOptions,
+  vehicleTypes,
+} from "../../../utils/utils";
+import ItemList from "../../../components/itemList";
+import ItemForm from "../../../components/itemForm";
+import VehicleTypeSelect from "../../../components/vehicleTypeSelect";
+import LocationTypeahead from "../../../components/locationTypeahead";
+import FormControl from "../../../components/formControl";
+import FormCheck from "../../../components/formRadio";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import {
   CREATE_HAUL_POST,
   GET_POSTHAULS,
-} from "../../services/graphql/haulPost";
+} from "../../../services/graphql/haulPost";
 import axios from "axios";
-import FormRadio from "../../components/formRadio";
+import FormRadio from "../../../components/formRadio";
 
 const CreateHaulPost = () => {
   const navigate = useNavigate();
@@ -130,8 +133,8 @@ const CreateHaulPost = () => {
   return (
     <Container className="py-5">
       <Row className="justify-content-center">
-        <Col md={8}>
-          <h1>Create Haul Post</h1>
+        <Col md={5} className="border rounded px-5 pt-5 pb-4">
+          <h4 className="secondary-color mb-4">Create Haul Post</h4>
           {error && <Alert variant="danger">{error.message}</Alert>}
           <Form onSubmit={formik.handleSubmit}>
             <LocationTypeahead formik={formik} label="Origin" id="origin" />

@@ -12,15 +12,15 @@ import {
   DELETE_POSTHAUL,
   GET_POSTHAULS,
   GET_POSTHAUL_BY_ID,
-} from "../../services/graphql/haulPost"; // Import the query for fetching haul post by ID
+} from "../../../services/graphql/haulPost";
 import {
   convertTo12HourFormat,
   getCoordinates,
   sliceAfterFourWords,
-} from "../../utils/utils";
+} from "../../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
-import Map from "../../components/map";
-import ItemList from "../../components/itemList";
+import Map from "../../../components/map";
+import ItemList from "../../../components/itemList";
 
 const TripHistory = () => {
   const navigate = useNavigate();
@@ -91,7 +91,7 @@ const TripHistory = () => {
       <Row className="justify-content-center">
         <Col md={12}>
           <ListGroup className="d-flex justify-content-center ">
-            {haul && ( // Check if haul exists
+            {haul && (
               <ListGroup.Item key={haul.id} className="border-0">
                 <div>
                   <Row className="mx-3  ">

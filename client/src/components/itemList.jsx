@@ -1,4 +1,3 @@
-// components/ItemList.js
 import React from "react";
 import { ListGroup, ListGroupItem, Row, Col } from "react-bootstrap";
 

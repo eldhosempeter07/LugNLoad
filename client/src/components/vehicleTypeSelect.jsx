@@ -1,4 +1,3 @@
-// components/VehicleTypeSelect.js
 import React from "react";
 import { Form } from "react-bootstrap";
 
@@ -19,7 +18,7 @@ const VehicleTypeSelect = ({ formik, vehicleTypes, disableOptions }) => (
         <option
           key={vehicle.type}
           value={vehicle.type}
-          disabled={disableOptions.includes(vehicle.type)}
+          disabled={disableOptions?.includes(vehicle.type)}
         >
           {vehicle.type}
         </option>

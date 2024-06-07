@@ -1,8 +1,6 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-// import logo from './path/to/logo.png'; // Replace with the path to your logo
-// import profileIcon from './path/to/profile-icon.png'; // Replace with the path to your profile icon
 
 const NavBar = () => {
   return (
@@ -24,6 +22,16 @@ const NavBar = () => {
             <Nav.Item>
               <Link to="/haul/create" className="nav-link primary-color">
                 Create Post
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/requests/find" className="nav-link primary-color">
+                Find Hauls
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/requests" className="nav-link primary-color">
+                Requests
               </Link>
             </Nav.Item>
           </Nav>
