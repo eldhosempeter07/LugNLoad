@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { ListGroup, Row, Col, Spinner, Alert } from "react-bootstrap";
 
@@ -7,16 +7,30 @@ import {
   DELETE_REQUEST_HAUL,
   GET_REQUEST_HAULS,
 } from "../../../services/graphql/haulRequest";
+import ModalPopup from "../../../components/Popup.tsx";
 
 const TripRequestList = () => {
   const { loading, error, data } = useQuery(GET_REQUEST_HAULS);
+  const [showModal, setShowModal] = useState(false);
+  const [id, setId] = useState(false);
 
   const [deleteRequestHaul, { error: deleteError }] = useMutation(
     DELETE_REQUEST_HAUL,
     {
       refetchQueries: [{ query: GET_REQUEST_HAULS }],
+      onCompleted: () => handleClose(),
     }
   );
+
+  const handleClose = () => setShowModal(false);
+
+  const handlePopup = () => {
+    deleteRequestHaul({
+      variables: {
+        id: parseInt(id),
+      },
+    });
+  };
 
   if (loading)
     return (
@@ -29,18 +43,10 @@ const TripRequestList = () => {
       <Alert variant="danger">Error fetching hauls: {error.message}</Alert>
     );
 
-  const handleDelete = (id) => {
-    deleteRequestHaul({
-      variables: {
-        id: parseInt(id),
-      },
-    });
-  };
-
   return (
     <div
       className={`bg-body-secondary ${
-        data?.getRequestHauls?.length < 3 ? "vh-100" : null
+        data?.getRequestHauls?.length < 2 ? "vh-100" : null
       }  `}
     >
       <h2 className="text-center secondary-color py-4">
@@ -106,7 +112,10 @@ const TripRequestList = () => {
                         </Link>
                         <p
                           className="btn btn-danger margin-left"
-                          onClick={() => handleDelete(haul?.id)}
+                          onClick={() => {
+                            setShowModal(true);
+                            setId(haul.id);
+                          }}
                         >
                           Delete
                         </p>
@@ -124,6 +133,16 @@ const TripRequestList = () => {
           </ListGroup>
         </Col>
       </Row>
+      {showModal ? (
+        <ModalPopup
+          show={showModal}
+          closebutton={true}
+          submitButtonName="Delete"
+          handleClose={handleClose}
+          handlePopup={handlePopup}
+          body="Are you sure you want to delete this request?"
+        />
+      ) : null}
     </div>
   );
 };

@@ -13,14 +13,11 @@ import {
   GET_POSTHAULS,
   GET_POSTHAUL_BY_ID,
 } from "../../../services/graphql/haulPost";
-import {
-  convertTo12HourFormat,
-  getCoordinates,
-  sliceAfterFourWords,
-} from "../../../utils/utils";
+import { convertTo12HourFormat, getCoordinates } from "../../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import Map from "../../../components/map";
 import ItemList from "../../../components/itemList";
+import ModalPopup from "../../../components/Popup.tsx";
 
 const TripHistory = () => {
   const navigate = useNavigate();
@@ -28,6 +25,20 @@ const TripHistory = () => {
   const [origin, setOrigin] = useState({ lat: "", lng: "" });
   const [destination, setDestination] = useState({ lat: "", lng: "" });
   const { id } = useParams();
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClose = () => setShowModal(false);
+
+  const handlePopup = () => {
+    removeHaulPost({
+      variables: {
+        id: parseInt(id),
+      },
+      onCompleted: () => navigate("/"),
+    });
+  };
+
   const { loading, error, data } = useQuery(GET_POSTHAUL_BY_ID, {
     variables: { id: parseInt(id) },
   });
@@ -72,23 +83,20 @@ const TripHistory = () => {
     DELETE_POSTHAUL,
     {
       refetchQueries: [{ query: GET_POSTHAULS }],
-      onCompleted: () => navigate("/haul"),
+      onCompleted: () => handleClose(),
     }
   );
-
-  const handleDelete = (id) => {
-    removeHaulPost({
-      variables: {
-        id: parseInt(id),
-      },
-    });
-  };
 
   return (
     <Container className="mt-3">
       {error ? <Error /> : null}
       {loading ? <Loading /> : null}
       <Row className="justify-content-center">
+        <h3 className="text-center secondary-color">
+          <span className="primary-color">T</span>rip{" "}
+          <span className="primary-color">D</span>
+          etails
+        </h3>
         <Col md={12}>
           <ListGroup className="d-flex justify-content-center ">
             {haul && (
@@ -98,7 +106,7 @@ const TripHistory = () => {
                     <div className=" d-flex justify-content-end ">
                       <p
                         className="btn btn-danger"
-                        onClick={() => handleDelete(haul?.id)}
+                        onClick={() => setShowModal(true)}
                       >
                         Delete
                       </p>
@@ -158,7 +166,13 @@ const TripHistory = () => {
                       >
                         {viewItems ? "Hide Items" : "View Items"}
                       </p>
-                      {viewItems ? <ItemList items={haul?.items} /> : null}
+                      {viewItems ? (
+                        haul?.items.length > 0 ? (
+                          <ItemList items={haul?.items} />
+                        ) : (
+                          <p>No Items Added</p>
+                        )
+                      ) : null}
                     </Col>
                     <Col md={6} className="mt-2 semi-bold text-secondary">
                       <p>Location</p>
@@ -185,6 +199,16 @@ const TripHistory = () => {
           </ListGroup>
         </Col>
       </Row>
+      {showModal ? (
+        <ModalPopup
+          show={showModal}
+          closebutton={true}
+          submitButtonName="Delete"
+          handleClose={handleClose}
+          handlePopup={handlePopup}
+          body="Are you sure you want to delete this item?"
+        />
+      ) : null}
     </Container>
   );
 };

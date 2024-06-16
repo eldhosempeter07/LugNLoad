@@ -20,11 +20,17 @@ import {
   CREATE_HAUL_POST,
   GET_POSTHAULS,
 } from "../../../services/graphql/haulPost";
-import axios from "axios";
 import FormRadio from "../../../components/formRadio";
+import ModalPopup from "../../../components/Popup.tsx";
 
 const CreateHaulPost = () => {
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
   const navigate = useNavigate();
+
+  const handlePopup = () => {
+    navigate("/");
+  };
   const [items, setItems] = useState([]);
   const [item, setItem] = useState({
     name: "",
@@ -38,7 +44,7 @@ const CreateHaulPost = () => {
 
   const [createHaulPost, { error }] = useMutation(CREATE_HAUL_POST, {
     refetchQueries: [{ query: GET_POSTHAULS }],
-    onCompleted: () => navigate("/haul"),
+    onCompleted: () => setShowModal(true),
   });
 
   const validationSchema = Yup.object({
@@ -67,6 +73,7 @@ const CreateHaulPost = () => {
     },
     validationSchema,
     onSubmit: (values) => {
+      console.log("as");
       createHaulPost({ variables: { haulPost: { ...values, items } } });
     },
   });
@@ -131,65 +138,87 @@ const CreateHaulPost = () => {
   }, [items]);
 
   return (
-    <Container className="py-5">
-      <Row className="justify-content-center">
-        <Col md={5} className="border rounded px-5 pt-5 pb-4">
-          <h4 className="secondary-color mb-4">Create Haul Post</h4>
-          {error && <Alert variant="danger">{error.message}</Alert>}
-          <Form onSubmit={formik.handleSubmit}>
-            <LocationTypeahead formik={formik} label="Origin" id="origin" />
-            <LocationTypeahead
-              formik={formik}
-              label="Destination"
-              id="destination"
-            />
-            <FormControl formik={formik} name="date" type="date" label="Date" />
-            <FormControl formik={formik} name="time" type="time" label="Time" />
-            <h6 className="text-secondary">Items</h6>
-            <ItemList items={items} />
+    <div>
+      <Container className="py-5">
+        <Row className="justify-content-center">
+          <Col md={5} className="border rounded px-5 pt-5 pb-4">
+            <h4 className="secondary-color mb-4">Create Haul Post</h4>
+            {error && <Alert variant="danger">{error.message}</Alert>}
+            <Form onSubmit={formik.handleSubmit}>
+              <LocationTypeahead formik={formik} label="Origin" id="origin" />
+              <LocationTypeahead
+                formik={formik}
+                label="Destination"
+                id="destination"
+              />
+              <FormControl
+                formik={formik}
+                name="date"
+                type="date"
+                label="Date"
+              />
+              <FormControl
+                formik={formik}
+                name="time"
+                type="time"
+                label="Time"
+              />
+              <h6 className="text-secondary">Items</h6>
+              <ItemList items={items} />
 
-            <ItemForm
-              item={item}
-              handleItemChange={handleItemChange}
-              addItem={addItem}
-              disableAdd={disableAdd}
-            />
+              <ItemForm
+                item={item}
+                handleItemChange={handleItemChange}
+                addItem={addItem}
+                disableAdd={disableAdd}
+              />
 
-            <VehicleTypeSelect
-              formik={formik}
-              vehicleTypes={vehicleTypes}
-              disableOptions={disableOptions}
-            />
-            <FormRadio
-              formik={formik}
-              label="Shared"
-              name="shared"
-              options={radioOptions}
-            />
-            <FormCheck
-              formik={formik}
-              name="seat"
-              label="Seat"
-              options={radioOptions}
-            />
-            <FormControl
-              formik={formik}
-              name="message"
-              type="textarea"
-              label="Message"
-            />
+              <VehicleTypeSelect
+                formik={formik}
+                vehicleTypes={vehicleTypes}
+                disableOptions={disableOptions}
+              />
+              <FormRadio
+                formik={formik}
+                label="Shared"
+                name="shared"
+                options={radioOptions}
+              />
+              <FormCheck
+                formik={formik}
+                name="seat"
+                label="Seat"
+                options={radioOptions}
+              />
+              <FormControl
+                formik={formik}
+                name="message"
+                type="textarea"
+                label="Message"
+              />
 
-            <Button
-              variant="primary"
-              type="submit"
-              className="primary-bgcolor mb-4"
-            >
-              Submit
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+              <Button
+                variant="primary"
+                type="submit"
+                className="primary-bgcolor mb-4"
+              >
+                Submit
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+      {showModal ? (
+        <ModalPopup
+          show={showModal}
+          closebutton={false}
+          submitButtonName="Ok"
+          handleClose={handleClose}
+          handlePopup={handlePopup}
+          body="Post Created Sucessfully"
+        />
+      ) : null}
+    </div>
   );
 };
 
