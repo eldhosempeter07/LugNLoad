@@ -1,37 +1,58 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { ListGroup, Row, Col, Spinner, Alert } from "react-bootstrap";
 import {
-  DELETE_POSTHAUL,
   GET_POSTHAULS,
-} from "../../../services/graphql/user/haulPost";
+  GET_POSTHAUL_BY_ID,
+} from "../../../services/graphql/user/haulPost.js";
 import {
   convertTo12HourFormat,
   sliceAfterFourWords,
-} from "../../../utils/utils";
+} from "../../../utils/utils.js";
 import ModalPopup from "../../../components/Popup.jsx";
+import {
+  CREATE_REQUEST_HAULER,
+  GET_REQUEST_HAULERS,
+} from "../../../services/graphql/hauler/haulerRequest.js";
+import HaulerRequestPopup from "../../../components/haulerRequestPopup.jsx";
 
-const TripHistoryList = () => {
+const UsersPostList = () => {
+  const [createRequestHauler] = useMutation(CREATE_REQUEST_HAULER, {
+    refetchQueries: [{ query: GET_REQUEST_HAULERS }],
+    onCompleted: () => navigate("/hauler/requests"),
+  });
+  const navigate = useNavigate();
   const { loading, error, data } = useQuery(GET_POSTHAULS);
-  const [showModal, setShowModal] = useState(false);
-  const [id, setId] = useState(false);
+  const [id, setId] = useState(null);
+  const { loading: postHaulerLoading, data: postHaulerData } = useQuery(
+    GET_POSTHAUL_BY_ID,
+    {
+      variables: { id },
+    }
+  );
 
-  const handleClose = () => setShowModal(false);
+  const [showPopup, setShowPopup] = useState(false);
 
-  const handlePopup = () => {
-    removeHaulPost({
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
+  const handelRequest = (formData) => {
+    const { origin, destination, date, time } = postHaulerData?.getHaulPostByID;
+    createRequestHauler({
       variables: {
-        id: parseInt(id),
+        hauler: {
+          origin,
+          destination,
+          date,
+          time,
+          name: "Steve Tom",
+          ...formData,
+        },
       },
     });
   };
-  const [removeHaulPost, { error: deleteError }] = useMutation(
-    DELETE_POSTHAUL,
-    {
-      refetchQueries: [{ query: GET_POSTHAULS }],
-      onCompleted: () => handleClose(),
-    }
-  );
 
   if (loading)
     return (
@@ -45,15 +66,9 @@ const TripHistoryList = () => {
     );
 
   return (
-    <div
-      className={`bg-body-secondary ${
-        data?.getHaulPosts?.length < 2 ? "vh-100" : null
-      }  `}
-    >
+    <div className="bg-body-secondary vh-100">
       <h2 className="text-center secondary-color py-4">
-        <span className="primary-color">M</span>y{" "}
-        <span className="primary-color">P</span>
-        osts
+        <span className="primary-color">H</span>aulers{" "}
       </h2>
       <Row className="justify-content-center mx-0 ">
         <Col md={9}>
@@ -99,20 +114,14 @@ const TripHistoryList = () => {
                     </Col>
                     <Col className="d-flex align-items-center">
                       <div className=" d-flex justify-align-content-between mt-3">
-                        <a
-                          href={`/haul/${haul.id}`}
-                          className="my-2 text-dark text-decoration-none "
-                        >
-                          View
-                        </a>
                         <p
-                          className="btn btn-danger margin-left"
+                          className="btn btn-success margin-left"
                           onClick={() => {
-                            setShowModal(true);
                             setId(haul.id);
+                            setShowPopup(true);
                           }}
                         >
-                          Delete
+                          Request
                         </p>
                       </div>
                     </Col>
@@ -131,18 +140,13 @@ const TripHistoryList = () => {
           </ListGroup>
         </Col>
       </Row>
-      {showModal ? (
-        <ModalPopup
-          show={showModal}
-          closebutton={true}
-          submitButtonName="Delete"
-          handleClose={handleClose}
-          handlePopup={handlePopup}
-          body="Are you sure you want to delete this post?"
-        />
-      ) : null}
+      <HaulerRequestPopup
+        show={showPopup}
+        handleClose={handleClosePopup}
+        handleSave={handelRequest}
+      />
     </div>
   );
 };
 
-export default TripHistoryList;
+export default UsersPostList;

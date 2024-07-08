@@ -19,9 +19,9 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import {
   CREATE_HAUL_POST,
   GET_POSTHAULS,
-} from "../../../services/graphql/haulPost";
+} from "../../../services/graphql/user/haulPost";
 import FormRadio from "../../../components/formRadio";
-import ModalPopup from "../../../components/Popup.tsx";
+import ModalPopup from "../../../components/Popup.jsx";
 
 const CreateHaulPost = () => {
   const [showModal, setShowModal] = useState(false);
@@ -73,7 +73,6 @@ const CreateHaulPost = () => {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log("as");
       createHaulPost({ variables: { haulPost: { ...values, items } } });
     },
   });

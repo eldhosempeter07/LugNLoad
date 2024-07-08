@@ -3,21 +3,21 @@ import { useMutation, useQuery } from "@apollo/client";
 import { ListGroup, Row, Col, Spinner, Alert } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
-import {
-  DELETE_REQUEST_HAUL,
-  GET_REQUEST_HAULS,
-} from "../../../services/graphql/user/haulRequest";
 import ModalPopup from "../../../components/Popup.jsx";
+import {
+  DELETE_REQUEST_HAULER,
+  GET_REQUEST_HAULERS,
+} from "../../../services/graphql/hauler/haulerRequest.js";
 
-const TripRequestList = () => {
-  const { loading, error, data } = useQuery(GET_REQUEST_HAULS);
+const HaulerTripRequestList = () => {
+  const { loading, error, data } = useQuery(GET_REQUEST_HAULERS);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(false);
 
-  const [deleteRequestHaul, { error: deleteError }] = useMutation(
-    DELETE_REQUEST_HAUL,
+  const [deleteRequestHauler, { error: deleteError }] = useMutation(
+    DELETE_REQUEST_HAULER,
     {
-      refetchQueries: [{ query: GET_REQUEST_HAULS }],
+      refetchQueries: [{ query: GET_REQUEST_HAULERS }],
       onCompleted: () => handleClose(),
     }
   );
@@ -25,7 +25,7 @@ const TripRequestList = () => {
   const handleClose = () => setShowModal(false);
 
   const handlePopup = () => {
-    deleteRequestHaul({
+    deleteRequestHauler({
       variables: {
         id: parseInt(id),
       },
@@ -44,11 +44,7 @@ const TripRequestList = () => {
     );
 
   return (
-    <div
-      className={`bg-body-secondary ${
-        data?.getRequestHauls?.length < 2 ? "vh-100" : null
-      }  `}
-    >
+    <div className="bg-body-secondary vh-100">
       <h2 className="text-center secondary-color py-4">
         <span className="primary-color">M</span>y{" "}
         <span className="primary-color">R</span>equests
@@ -56,12 +52,13 @@ const TripRequestList = () => {
       <Row className="justify-content-center mx-0 ">
         <Col md={8}>
           <ListGroup>
-            {data?.getRequestHauls?.length !== 0 ? (
-              data?.getRequestHauls?.map((haul) => (
+            {data?.getRequestHaulers?.length !== 0 ? (
+              data?.getRequestHaulers?.map((haul) => (
                 <ListGroup.Item key={haul.id} className="my-3 px-4 py-3">
                   <Row className="mt-3 border py-4 my-2 mx-2 px-2">
                     <Col md={5}>
                       <div>
+                        <h4 className="secondary-color mb-3">{haul.name}</h4>
                         <p>
                           <span className="semi-bold">Origin: </span>
                           <span className="text-secondary semi-bold">
@@ -75,22 +72,9 @@ const TripRequestList = () => {
                           </span>
                         </p>
                         <p>
-                          <span className="semi-bold">Seat: </span>
-                          <span className="text-secondary semi-bold ">
-                            {haul.seat ? "Yes" : "No"}
-                          </span>
-                          <span className="semi-bold  margin-left">
-                            Shared:{" "}
-                          </span>
+                          <span className="semi-bold">Message: </span>
                           <span className="text-secondary semi-bold">
-                            {haul.shared ? "Yes" : "No"}
-                          </span>
-                        </p>
-                        <p></p>
-                        <p>
-                          <span className="semi-bold">Vehicle Type: </span>
-                          <span className="text-secondary semi-bold">
-                            {haul.vehicleType}
+                            {haul.message}
                           </span>
                         </p>
                       </div>
@@ -105,7 +89,7 @@ const TripRequestList = () => {
                     <Col className="d-flex align-items-center">
                       <div className=" d-flex justify-align-content-between mt-3">
                         <Link
-                          to={`/requests/${haul.id}`}
+                          to={`/hauler/request/${haul.id}`}
                           className="my-2 text-dark text-decoration-none "
                         >
                           View
@@ -128,7 +112,7 @@ const TripRequestList = () => {
                 </ListGroup.Item>
               ))
             ) : (
-              <p className="text-center">No haul Posts available.</p>
+              <p className="text-center">No Hauler Post available.</p>
             )}
           </ListGroup>
         </Col>
@@ -147,4 +131,4 @@ const TripRequestList = () => {
   );
 };
 
-export default TripRequestList;
+export default HaulerTripRequestList;

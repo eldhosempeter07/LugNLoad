@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { ListGroup, Row, Col, Card } from "react-bootstrap";
-import {
-  convertTo12HourFormat,
-  haulInfo,
-  sliceAfterFourWords,
-} from "../../../utils/utils";
+import { haulInfo } from "../../../utils/utils";
 import RequestPopup from "../../../components/requestPopup";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_REQUEST_HAUL,
   GET_REQUEST_HAULS,
-} from "../../../services/graphql/haulRequest";
+} from "../../../services/graphql/user/haulRequest";
 import { useNavigate } from "react-router-dom";
+import {
+  GET_HAULERS_POSTS,
+  GET_POSTHAULER_BY_ID,
+} from "../../../services/graphql/hauler/haulerPost";
 
-const HaulPostList = () => {
+const HaulersPosts = () => {
+  const { data } = useQuery(GET_HAULERS_POSTS);
+  const [id, setId] = useState(null);
+  const { data: haulerData } = useQuery(GET_POSTHAULER_BY_ID, {
+    variables: { id },
+  });
+
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [randomProfilePics, setRandomProfilePics] = useState([]);
@@ -28,20 +34,33 @@ const HaulPostList = () => {
   }, []);
 
   const handleSave = (formData) => {
-    const sample = {
-      origin: "123 Main St, Toronto, ON",
-      destination: "456 Elm St, Ottawa, ON",
-      driverName: "Emma Johnson",
-      driverId: "emma_driver123",
-      vehicleCapacity: 1000,
-      vehicleDimension: "8' x 5' x 4'",
-      vehicleType: "Van",
-      budget: "$200-$300",
-      vehiclePlateNumber: "XYZ456",
-      date: "2024-06-15",
-    };
-    createRequestHaul({ variables: { haul: { ...sample, ...formData } } });
-    console.log(formData);
+    const {
+      origin,
+      destination,
+      driverName,
+      driverId,
+      vehicleCapacity,
+      vehicleDimension,
+      vehicleType,
+      vehiclePlateNumber,
+      date,
+    } = haulerData?.getHaulerPostByID;
+    createRequestHaul({
+      variables: {
+        haul: {
+          origin,
+          destination,
+          driverName,
+          driverId,
+          vehicleCapacity,
+          vehicleDimension,
+          vehicleType,
+          vehiclePlateNumber,
+          date,
+          ...formData,
+        },
+      },
+    });
   };
 
   const handleClosePopup = () => {
@@ -50,7 +69,7 @@ const HaulPostList = () => {
 
   const fetchRandomProfilePics = () => {
     Promise.all(
-      haulInfo.map((haul) =>
+      haulInfo.map(() =>
         fetch("https://randomuser.me/api/")
           .then((response) => {
             if (!response.ok) {
@@ -80,21 +99,15 @@ const HaulPostList = () => {
   };
 
   return (
-    <div
-      className={`bg-body-secondary ${
-        haulInfo?.length < 3 ? "vh-100" : null
-      }  `}
-    >
+    <div className="bg-body-secondary vh-100 ">
       <h2 className="text-center secondary-color py-4">
-        <span className="primary-color">H</span>aul{" "}
-        <span className="primary-color">P</span>
-        osts
+        <span className="primary-color">H</span>aulers{" "}
       </h2>
       <Row className="justify-content-center mx-0">
         <Col md={9}>
           <ListGroup>
-            {haulInfo.length !== 0 ? (
-              haulInfo.map((haul, index) => (
+            {data?.getHaulerPosts?.length !== 0 ? (
+              data?.getHaulerPosts?.map((haul, index) => (
                 <ListGroup.Item
                   key={haul.driver_id}
                   className="my-3 border-2 px-4 py-3"
@@ -149,7 +162,10 @@ const HaulPostList = () => {
                       <Col md={2} className="d-flex align-items-center">
                         <p
                           className="btn btn-success "
-                          onClick={() => setShowPopup(true)}
+                          onClick={() => {
+                            setId(haul.id);
+                            setShowPopup(true);
+                          }}
                         >
                           Request
                         </p>
@@ -173,4 +189,4 @@ const HaulPostList = () => {
   );
 };
 
-export default HaulPostList;
+export default HaulersPosts;

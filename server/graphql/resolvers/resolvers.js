@@ -1,4 +1,6 @@
 import { PostHaul } from "../../models/PostHaul.js";
+import { PostHauler } from "../../models/PostHauler.js";
+import { RequestHauler } from "../../models/RequestHauler.js";
 import { RequestHaul } from "../../models/RequestHaul.js";
 import { generateUniqueId } from "../../utils/utils.js";
 import { GraphQLScalarType, Kind } from "graphql";
@@ -89,6 +91,35 @@ export const resolvers = {
         throw new Error(error);
       }
     },
+
+    getHaulerPosts: async () => {
+      const postHauls = await PostHauler.find();
+      return postHauls;
+    },
+    getHaulerPostByID: async (_, { id }) => {
+      const postHaul = await PostHauler.findOne({ id });
+      return postHaul;
+    },
+
+    getRequestHaulers: async () => {
+      try {
+        const requestHaulers = await RequestHauler.find();
+        return requestHaulers;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    getRequestHaulerById: async (_, { id }) => {
+      try {
+        const requestHauler = await RequestHauler.findOne({ id });
+        if (!requestHauler) {
+          throw new Error("Request haul not found");
+        }
+        return requestHauler;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
   },
   Mutation: {
     createHaulPost: async (_, { haulPost }) => {
@@ -104,7 +135,6 @@ export const resolvers = {
 
     createRequestHaul: async (_, { haul }) => {
       try {
-        console.log(haul);
         haul.id = generateUniqueId();
         const newRequestHaul = await RequestHaul.create(haul);
         return newRequestHaul;
@@ -115,6 +145,38 @@ export const resolvers = {
     deleteRequestHaul: async (_, { id }) => {
       try {
         const deletedRequestHaul = await RequestHaul.findOneAndDelete({ id });
+        if (!deletedRequestHaul) {
+          throw new Error("Request haul not found");
+        }
+        return deletedRequestHaul;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
+    createHaulerPost: async (_, { haulerPost }) => {
+      haulerPost.id = generateUniqueId();
+      const postHauls = await PostHauler.create(haulerPost);
+      return postHauls;
+    },
+
+    removeHaulerPost: async (_, { id }) => {
+      const removedpostedHaul = await PostHauler.findOneAndDelete({ id });
+      return removedpostedHaul;
+    },
+
+    createRequestHauler: async (_, { hauler }) => {
+      try {
+        hauler.id = generateUniqueId();
+        const newRequestHaul = await RequestHauler.create(hauler);
+        return newRequestHaul;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    deleteRequestHauler: async (_, { id }) => {
+      try {
+        const deletedRequestHaul = await RequestHauler.findOneAndDelete({ id });
         if (!deletedRequestHaul) {
           throw new Error("Request haul not found");
         }

@@ -84,6 +84,54 @@ input CreateRequestHaulInput {
   message: String
 }
 
+type RequestHauler {
+  id: Int!
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  time: String
+  name: String
+  message: String
+}
+
+input CreateRequestHaulerInput {
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  time: String
+  name: String
+  message: String
+}
+
+# HaulerPost
+
+type HaulerPost {
+  id: Int!
+  origin: String!
+  destination: String!
+  driverName: String!
+  driverId: String!
+  vehicleCapacity: Int!
+  vehicleDimension: String!
+  vehicleType: String!
+  budget: String!
+  vehiclePlateNumber: String!
+  date: GQLDate!
+}
+
+input HaulerPostInput {
+  origin: String!
+  destination: String!
+  driverName: String!
+  driverId: String!
+  vehicleCapacity: Int!
+  vehicleDimension: String!
+  vehicleType: String!
+  budget: String!
+  vehiclePlateNumber: String!
+  date: GQLDate!
+}
+
 type Query {
   getHaulPosts: [HaulPost!]!
   getHaulPostByID(id: Int!): HaulPost!
@@ -91,6 +139,15 @@ type Query {
   getRequestHauls: [RequestHaul]!
   getRequestHaulById(id: Int!): RequestHaul
   getRequestHaulByFilter(haul: RequestHaulSearchInput): [RequestHaul]!
+
+  # Hauler
+
+  getHaulerPosts: [HaulerPost!]!
+  getHaulerPostByID(id: Int!): HaulerPost
+
+  getRequestHaulers: [RequestHauler]!
+  getRequestHaulerById(id: Int!): RequestHauler
+  getRequestHaulersByFilter(hauler: CreateRequestHaulerInput): [RequestHauler]!
 }
 
 type Mutation {
@@ -99,6 +156,13 @@ type Mutation {
 
   createRequestHaul(haul: CreateRequestHaulInput!): RequestHaul!
   deleteRequestHaul(id: Int!): RequestHaul
+
+  # Hauler
+  createHaulerPost(haulerPost: HaulerPostInput!): HaulerPost!
+  removeHaulerPost(id: Int!): HaulerPost
+
+  createRequestHauler(hauler: CreateRequestHaulerInput!): RequestHauler!
+  deleteRequestHauler(id: Int!): RequestHauler
 }
 
 scalar GQLDate

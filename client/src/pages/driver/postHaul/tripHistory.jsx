@@ -12,7 +12,7 @@ import {
   DELETE_POSTHAUL,
   GET_POSTHAULS,
   GET_POSTHAUL_BY_ID,
-} from "../../../services/graphql/user/haulPost";
+} from "../../../services/graphql/haulPost";
 import { convertTo12HourFormat, getCoordinates } from "../../../utils/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import Map from "../../../components/map";

@@ -6,8 +6,8 @@ import {
   DELETE_REQUEST_HAUL,
   GET_REQUEST_HAULS,
   GET_REQUEST_HAUL_BY_ID,
-} from "../../../services/graphql/haulRequest";
-import ModalPopup from "../../../components/Popup.tsx";
+} from "../../../services/graphql/user/haulRequest";
+import ModalPopup from "../../../components/Popup.jsx";
 
 const TripRequest = () => {
   const navigate = useNavigate();
@@ -48,11 +48,7 @@ const TripRequest = () => {
   const request = data?.getRequestHaulById;
 
   return (
-    <div
-      className={`bg-body-secondary ${
-        data?.getRequestHaulById?.length < 3 ? "vh-100" : null
-      }  `}
-    >
+    <div className="bg-body-secondary vh-100">
       <h2 className="text-center secondary-color py-4">
         <span className="primary-color">M</span>y{" "}
         <span className="primary-color">R</span>equest

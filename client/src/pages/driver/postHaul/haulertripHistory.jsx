@@ -12,14 +12,18 @@ import {
   DELETE_POSTHAUL,
   GET_POSTHAULS,
   GET_POSTHAUL_BY_ID,
-} from "../../../services/graphql/user/haulPost";
-import { convertTo12HourFormat, getCoordinates } from "../../../utils/utils";
+} from "../../../services/graphql/user/haulPost.js";
+import { convertTo12HourFormat, getCoordinates } from "../../../utils/utils.js";
 import { useNavigate, useParams } from "react-router-dom";
-import Map from "../../../components/map";
-import ItemList from "../../../components/itemList";
+import Map from "../../../components/map.jsx";
+import ItemList from "../../../components/itemList.jsx";
 import ModalPopup from "../../../components/Popup.jsx";
+import {
+  DELETE_POSTHAULER,
+  GET_POSTHAULER_BY_ID,
+} from "../../../services/graphql/hauler/haulerPost.js";
 
-const TripHistory = () => {
+const HaulerTripHistory = () => {
   const navigate = useNavigate();
   const [viewItems, setViewItems] = useState(false);
   const [origin, setOrigin] = useState({ lat: "", lng: "" });
@@ -31,15 +35,15 @@ const TripHistory = () => {
   const handleClose = () => setShowModal(false);
 
   const handlePopup = () => {
-    removeHaulPost({
+    removeHaulerPost({
       variables: {
         id: parseInt(id),
       },
-      onCompleted: () => navigate("/"),
+      onCompleted: () => navigate("/hauler"),
     });
   };
 
-  const { loading, error, data } = useQuery(GET_POSTHAUL_BY_ID, {
+  const { loading, error, data } = useQuery(GET_POSTHAULER_BY_ID, {
     variables: { id: parseInt(id) },
   });
 
@@ -61,15 +65,15 @@ const TripHistory = () => {
     }
   };
 
-  const haul = data?.getHaulPostByID;
+  const haul = data?.getHaulerPostByID;
 
   useEffect(() => {
     const fetchCoordinates = async () => {
       try {
         if (data) {
-          setOrigin(await getCoordinates(data?.getHaulPostByID?.origin));
+          setOrigin(await getCoordinates(data?.getHaulerPostByID?.origin));
           setDestination(
-            await getCoordinates(data?.getHaulPostByID?.destination)
+            await getCoordinates(data?.getHaulerPostByID?.destination)
           );
         }
       } catch (error) {
@@ -79,8 +83,8 @@ const TripHistory = () => {
     fetchCoordinates();
   }, [data]);
 
-  const [removeHaulPost, { error: deleteError }] = useMutation(
-    DELETE_POSTHAUL,
+  const [removeHaulerPost, { error: deleteError }] = useMutation(
+    DELETE_POSTHAULER,
     {
       refetchQueries: [{ query: GET_POSTHAULS }],
       onCompleted: () => handleClose(),
@@ -128,51 +132,8 @@ const TripHistory = () => {
                         <span className="d-block semi-bold text-secondary">
                           Date
                         </span>{" "}
-                        {haul.date}
+                        {haul?.date}
                       </p>
-                      <p className="fw-bold">
-                        <span className="d-block semi-bold text-secondary">
-                          Time
-                        </span>{" "}
-                        {convertTo12HourFormat(haul.time)}
-                      </p>
-                      <p className="fw-bold">
-                        <span className="d-block semi-bold text-secondary">
-                          Vehicle Type
-                        </span>{" "}
-                        {haul.vehicleType}
-                      </p>
-                      <p className="fw-bold">
-                        <span className="d-block semi-bold text-secondary">
-                          Shared
-                        </span>{" "}
-                        {haul.shared ? "Yes" : "No"}
-                      </p>
-                      <p className="fw-bold">
-                        <span className="d-block semi-bold text-secondary">
-                          Seat
-                        </span>{" "}
-                        {haul.seat ? "Yes" : "No"}
-                      </p>
-                      <p className="fw-bold">
-                        <span className="d-block semi-bold text-secondary">
-                          Message
-                        </span>{" "}
-                        {haul.message}
-                      </p>
-                      <p
-                        className="semi-bold text-secondary cursor-pointer text-decoration-underline"
-                        onClick={() => setViewItems(!viewItems)}
-                      >
-                        {viewItems ? "Hide Items" : "View Items"}
-                      </p>
-                      {viewItems ? (
-                        haul?.items.length > 0 ? (
-                          <ItemList items={haul?.items} />
-                        ) : (
-                          <p>No Items Added</p>
-                        )
-                      ) : null}
                     </Col>
                     <Col md={6} className="mt-2 semi-bold text-secondary">
                       <p>Location</p>
@@ -213,4 +174,4 @@ const TripHistory = () => {
   );
 };
 
-export default TripHistory;
+export default HaulerTripHistory;

@@ -10,7 +10,7 @@ import LocationTypeahead from "../../../components/locationTypeahead";
 import FormControl from "../../../components/formControl";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 
-const FindTrip = () => {
+const FindUsers = () => {
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
@@ -41,14 +41,14 @@ const FindTrip = () => {
   }, []);
 
   const handleSearch = () => {
-    navigate("/requests/haulers/posts");
+    navigate("/hauler/haul/posts");
   };
 
   return (
     <Container className="py-5 ">
       <Row className="justify-content-center">
         <Col md={5} className=" border rounded px-5 pt-5 pb-4">
-          <h4 className="mb-4 secondary-color">Find Haul</h4>
+          <h4 className="mb-4 secondary-color">Find Users</h4>
           <Form onSubmit={formik.handleSubmit}>
             <LocationTypeahead formik={formik} label="Origin" id="origin" />
             <LocationTypeahead
@@ -76,4 +76,4 @@ const FindTrip = () => {
   );
 };
 
-export default FindTrip;
+export default FindUsers;

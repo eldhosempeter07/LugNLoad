@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const NavBar = () => {
@@ -19,21 +19,69 @@ const NavBar = () => {
           </Nav>
 
           <Nav className="mx-auto">
-            <Nav.Item>
-              <Link to="/haul/create" className="nav-link primary-color">
+            <NavDropdown
+              title="Hauler"
+              id="navbarScrollingDropdown"
+              className=" primary-color"
+            >
+              <NavDropdown.Item
+                as={Link}
+                to="/hauler"
+                className="text-center text-uppercase fw-bold primary-color"
+              >
+                Haulers Posts
+              </NavDropdown.Item>
+
+              <NavDropdown.Item
+                as={Link}
+                to="/hauler/create"
+                className="text-center text-uppercase fw-bold primary-color"
+              >
                 Create Post
-              </Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link to="/requests/find" className="nav-link primary-color">
-                Find Hauls
-              </Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link to="/requests" className="nav-link primary-color">
+              </NavDropdown.Item>
+
+              <NavDropdown.Item
+                as={Link}
+                to="/hauler/users/find"
+                className="text-center text-uppercase fw-bold primary-color"
+              >
+                Find Users
+              </NavDropdown.Item>
+
+              <NavDropdown.Item
+                as={Link}
+                to="/hauler/requests"
+                className="text-center text-uppercase fw-bold primary-color"
+              >
                 Requests
-              </Link>
-            </Nav.Item>
+              </NavDropdown.Item>
+            </NavDropdown>
+            {/* Hauler  */}
+            <NavDropdown title="User" id="navbarScrollingDropdown">
+              <NavDropdown.Item
+                as={Link}
+                to="/haul/create"
+                className="text-center  text-uppercase fw-bold primary-color"
+              >
+                Create Post
+              </NavDropdown.Item>
+
+              <NavDropdown.Item
+                as={Link}
+                to="/requests/find"
+                className="text-center  text-uppercase fw-bold primary-color"
+              >
+                Find Haulers
+              </NavDropdown.Item>
+
+              <NavDropdown.Item
+                as={Link}
+                to="/requests"
+                className="text-center  text-uppercase fw-bold primary-color"
+              >
+                Requests
+              </NavDropdown.Item>
+            </NavDropdown>
           </Nav>
 
           <Nav>

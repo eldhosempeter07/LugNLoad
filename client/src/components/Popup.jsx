@@ -9,13 +9,14 @@ const ModalPopup = ({
   body,
   closebutton,
   submitButtonName,
+  type,
 }) => {
-  console.log("hi");
-
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Confirm Delete</Modal.Title>
+        <Modal.Title>
+          {type == "create" ? "Success" : "Confirm Delete"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>{body}</Modal.Body>
       <div className="m-3 text-end">
