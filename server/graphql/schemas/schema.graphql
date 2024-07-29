@@ -1,0 +1,252 @@
+type Item {
+  name: String
+  number: Int
+  length: Float
+  width: Float
+  height: Float
+}
+
+input ItemInput {
+  name: String
+  number: Int
+  length: Float
+  width: Float
+  height: Float
+}
+
+input RequestHaulSearchInput {
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  vehicleType: String!
+}
+
+type HaulPost {
+  id: Int
+  origin: String
+  destination: String
+  date: GQLDate
+  items: [Item]
+  time: String
+  vehicleType: String
+  shared: Boolean
+  seat: Boolean
+  message: String
+  created: GQLDate
+}
+
+input InputHaulPost {
+  id: Int
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  items: [ItemInput]
+  time: String
+  vehicleType: String
+  shared: Boolean
+  message: String
+  seat: Boolean
+}
+
+type RequestHaul {
+  id: Int!
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  vehicleType: String!
+  time: String!
+  driverName: String!
+  driverId: String!
+  vehicleCapacity: Int!
+  vehicleDimension: String!
+  shared: Boolean!
+  seat: Boolean!
+  budget: Float!
+  vehiclePlateNumber: String!
+  created: GQLDate!
+  message: String
+}
+
+input CreateRequestHaulInput {
+  origin: String!
+  destination: String!
+  driverName: String!
+  driverId: String!
+  vehicleCapacity: Int!
+  vehicleDimension: String!
+  vehicleType: String!
+  vehiclePlateNumber: String!
+  shared: Boolean!
+  seat: Boolean!
+  budget: Float!
+  time: String!
+  date: GQLDate!
+  message: String
+}
+
+type RequestHauler {
+  id: Int!
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  time: String
+  name: String
+  message: String
+}
+
+input CreateRequestHaulerInput {
+  origin: String!
+  destination: String!
+  date: GQLDate!
+  time: String
+  name: String
+  message: String
+}
+
+# HaulerPost
+
+type HaulerPost {
+  id: Int!
+  origin: String!
+  destination: String!
+  driverName: String!
+  driverId: String!
+  vehicleCapacity: Int!
+  vehicleDimension: String!
+  vehicleType: String!
+  budget: String!
+  vehiclePlateNumber: String!
+  date: GQLDate!
+}
+
+input HaulerPostInput {
+  origin: String!
+  destination: String!
+  driverName: String!
+  driverId: String!
+  vehicleCapacity: Int!
+  vehicleDimension: String!
+  vehicleType: String!
+  budget: String!
+  vehiclePlateNumber: String!
+  date: GQLDate!
+}
+
+# User
+
+type User {
+  name: String
+  email: String
+}
+
+type UserProfile {
+  email: String
+  phone: String
+  name: String
+  address: String
+}
+
+input UserProfileInput {
+  email: String!
+  phone: String
+  name: String
+  address: String
+}
+
+input UserInput {
+  name: String
+  email: String!
+  password: String!
+  address: String
+}
+
+input UserLoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginData {
+  user: User
+  token: String
+  message: String
+  type: String
+}
+
+input CreateHaulerInput {
+  name: String!
+  email: String!
+  image: String
+  type: String
+  phone: String
+  password: String!
+  address: String
+  license: String!
+  vehicleDimension: String!
+  vehicleCapacity: Float!
+  vehicleType: String!
+  vehiclePlateNumber: String!
+}
+
+type Hauler {
+  id: ID!
+  status: String
+  name: String!
+  email: String!
+  image: String
+  type: String
+  phone: String
+  password: String!
+  address: String
+  license: String!
+  vehicleDimension: String!
+  vehicleCapacity: Float!
+  vehicleType: String!
+  vehiclePlateNumber: String!
+}
+
+type Query {
+  getHaulPosts: [HaulPost!]!
+  getUserHaulPosts: [HaulPost!]!
+  getHaulPostByID(id: Int!): HaulPost!
+
+  getRequestHauls: [RequestHaul]!
+  getRequestHaulById(id: Int!): RequestHaul
+  getRequestHaulByFilter(haul: RequestHaulSearchInput): [RequestHaul]!
+  getUserInfo: UserProfile!
+
+  # Hauler
+
+  getHaulerPosts: [HaulerPost!]!
+  getUserHaulerPosts: [HaulerPost!]!
+  getHaulerPostByID(id: Int!): HaulerPost
+
+  getRequestHaulers: [RequestHauler]!
+  getRequestHaulerById(id: Int!): RequestHauler
+  getRequestHaulersByFilter(hauler: CreateRequestHaulerInput): [RequestHauler]!
+  getHaulerInfo: Hauler!
+}
+
+type Mutation {
+  createHaulPost(haulPost: InputHaulPost!): HaulPost
+  removeHaulPost(id: Int!): HaulPost
+
+  createRequestHaul(haul: CreateRequestHaulInput!): RequestHaul!
+  deleteRequestHaul(id: Int!): RequestHaul
+
+  # Hauler
+  createHaulerPost(haulerPost: HaulerPostInput!): HaulerPost!
+  removeHaulerPost(id: Int!): HaulerPost
+
+  createRequestHauler(hauler: CreateRequestHaulerInput!): RequestHauler!
+  deleteRequestHauler(id: Int!): RequestHauler
+
+  registerUser(user: UserInput): User
+  loginUser(user: UserLoginInput): LoginData
+  updateUser(user: UserProfileInput): UserProfile
+
+  haulerLogin(hauler: UserLoginInput!): LoginData!
+  createHauler(hauler: CreateHaulerInput!): Hauler!
+  updateHauler(hauler: CreateHaulerInput): Hauler
+}
+
+scalar GQLDate
