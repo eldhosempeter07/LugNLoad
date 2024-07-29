@@ -7,6 +7,7 @@ import { resolvers } from "./graphql/resolvers/resolvers.js";
 import { ApolloServer } from "apollo-server-express";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
@@ -15,6 +16,8 @@ const typeDefs = fs.readFileSync(
   path.join(__dirname, "graphql/schemas/schema.graphql"),
   "utf-8"
 );
+
+app.use(cors());
 
 const userContext = ({ req }) => {
   const authHeader = req.headers.authorization;
