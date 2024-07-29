@@ -12,6 +12,7 @@ import {
   GET_HAULERS_POSTS,
   GET_POSTHAULER_BY_ID,
 } from "../../../services/graphql/hauler/haulerPost";
+import Dummy from "../../../utils/pics/user.jpg";
 
 const HaulersPosts = () => {
   const { data } = useQuery(GET_HAULERS_POSTS);
@@ -28,10 +29,6 @@ const HaulersPosts = () => {
     refetchQueries: [{ query: GET_REQUEST_HAULS }],
     onCompleted: () => navigate("/requests"),
   });
-
-  useEffect(() => {
-    fetchRandomProfilePics();
-  }, []);
 
   const handleSave = (formData) => {
     const {
@@ -67,37 +64,6 @@ const HaulersPosts = () => {
     setShowPopup(false);
   };
 
-  const fetchRandomProfilePics = () => {
-    Promise.all(
-      haulInfo.map(() =>
-        fetch("https://randomuser.me/api/")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => data.results[0].picture.large)
-          .catch((error) => {
-            console.error(
-              "There was a problem fetching the profile picture:",
-              error
-            );
-            return null;
-          })
-      )
-    )
-      .then((pics) => {
-        setRandomProfilePics(pics);
-      })
-      .catch((error) => {
-        console.error(
-          "There was a problem fetching profile pictures for all items:",
-          error
-        );
-      });
-  };
-
   return (
     <div className="bg-body-secondary vh-100 ">
       <h2 className="text-center secondary-color py-4">
@@ -115,21 +81,19 @@ const HaulersPosts = () => {
                   <Card>
                     <Row className="p-3">
                       <Col sm={4} md={2} className="d-flex align-items-center">
-                        {randomProfilePics[index] && (
-                          <Card.Img
-                            variant="top"
-                            src={randomProfilePics[index]}
-                            alt={`Random Profile Pic ${index}`}
-                          />
-                        )}
+                        <Card.Img
+                          variant="top"
+                          src={Dummy}
+                          alt={`Random Profile Pic ${index}`}
+                        />
                       </Col>
                       <Col md={8}>
                         <Card.Body>
                           <Card.Title className="secondary-color">
-                            {haul.name}
+                            {haul.driverName}
                           </Card.Title>
                           <Card.Subtitle className="mb-2 text-muted">
-                            Driver ID: {haul.driver_id}
+                            Driver ID: {haul.driverId}
                           </Card.Subtitle>
                           <Card.Text>
                             <p className="my-1">
@@ -141,13 +105,13 @@ const HaulersPosts = () => {
                             <p className="my-1">
                               <span className="semi-bold">Capacity :</span>{" "}
                               <span className="text-secondary semi-bold">
-                                {haul.capacity}
+                                {haul.vehicleCapacity}
                               </span>
                             </p>
                             <p className="my-1">
                               <span className="semi-bold">Vehicle Type :</span>{" "}
                               <span className="text-secondary semi-bold">
-                                {haul.vehicle_type}
+                                {haul.vehicleType}
                               </span>
                             </p>
                             <p className="my-1">
@@ -175,7 +139,7 @@ const HaulersPosts = () => {
                 </ListGroup.Item>
               ))
             ) : (
-              <p className="text-center">No haul Posts available.</p>
+              <p className="text-center">No hauler Posts available.</p>
             )}
           </ListGroup>
         </Col>

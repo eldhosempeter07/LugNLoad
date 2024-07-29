@@ -1,16 +1,35 @@
 import React from "react";
 import * as ReactDOM from "react-dom/client";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+} from "@apollo/client";
 import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import { setContext } from "@apollo/client/link/context";
 
-const client = new ApolloClient({
-  uri: process.env.REACT_APP_BACKEND_URL,
-  cache: new InMemoryCache(),
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
 });
 
-// Supported in React 18+
+const httpLink = new HttpLink({
+  uri: process.env.REACT_APP_BACKEND_URL,
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache({ addTypename: false }),
+});
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(

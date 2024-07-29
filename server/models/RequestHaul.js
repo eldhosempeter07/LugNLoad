@@ -13,6 +13,7 @@ const RequestHaulSchema = new Schema({
   vehicleCapacity: { type: Number, required: true },
   vehicleDimension: { type: String, required: true },
   vehicleType: { type: String, required: true },
+  email: { type: String, required: true },
   shared: { type: Boolean, required: true },
   seat: { type: Boolean, required: true },
   budget: { type: Number, required: true },

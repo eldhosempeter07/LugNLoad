@@ -15,34 +15,118 @@ import HaulersPosts from "./pages/user/requestHaul/haulerPosts";
 import HaulerTripRequest from "./pages/driver/requestHauler/haulertripRequest";
 import HaulerTripRequestList from "./pages/driver/requestHauler/HaulerTripRequestList";
 import HaulerTripHistory from "./pages/driver/postHaul/haulertripHistory";
+import Login from "./pages/driver/register/HaulerLogin";
+import Register from "./pages/user/register/Register";
+import HaulerRegister from "./pages/driver/register/HaulerRegister";
+import HaulLogin from "./pages/driver/register/HaulerLogin";
+import UserLogin from "./pages/user/register/UserLogin";
+import HaulerProfile from "./pages/driver/register/HaulerProfile";
+import UserProfile from "./pages/user/register/UserProfile";
+import RouteComponent from "./components/routeComponent";
+import HaulerProtectedRoute from "./utils/haulerProtectedRoute";
+import BaseRoute from "./utils/baseRoute";
+import NonAuthRoute from "./utils/nonAuthRoute";
 function App() {
   return (
     <>
       <Navbar />
-      {/* <Router> */}
       <Routes>
-        <Route path="/" element={<TripHistoryList />} />
+        <Route path="/" element={<BaseRoute />} />
+        <Route
+          path="/hauler-login"
+          element={<NonAuthRoute element={<HaulLogin />} />}
+        />
+        <Route
+          path="/login"
+          element={<NonAuthRoute element={<UserLogin />} />}
+        />
+
+        <Route
+          path="/register"
+          element={<NonAuthRoute element={<Register />} />}
+        />
+        <Route
+          path="/hauler-register"
+          element={<NonAuthRoute element={<HaulerRegister />} />}
+        />
         <Route path="/haul">
-          <Route index element={<TripHistoryList />} />
-          <Route path="create" element={<CreateHaulPost />} />
-          <Route path=":id" element={<TripHistory />} />
+          <Route
+            path="create"
+            element={<RouteComponent element={<CreateHaulPost />} />}
+          />
+          <Route
+            path="posts"
+            element={<RouteComponent element={<TripHistoryList />} />}
+          />
+          <Route
+            path="profile"
+            element={<RouteComponent element={<UserProfile />} />}
+          />
+          <Route
+            path=":id"
+            element={<RouteComponent element={<TripHistory />} />}
+          />
         </Route>
+
+        {/* Requests Routes */}
         <Route path="/requests">
-          <Route index element={<TripRequestList />} />
-          <Route path="find" element={<FindTrip />} />
-          <Route path="haulers/posts" element={<HaulersPosts />} />
-          <Route path=":id" element={<TripRequest />} />
+          <Route
+            index
+            element={<RouteComponent element={<TripRequestList />} />}
+          />
+          <Route
+            path="find"
+            element={<RouteComponent element={<FindTrip />} />}
+          />
+          <Route
+            path="haulers/posts"
+            element={<RouteComponent element={<HaulersPosts />} />}
+          />
+          <Route
+            path=":id"
+            element={<RouteComponent element={<TripRequest />} />}
+          />
         </Route>
 
         <Route path="/hauler">
-          <Route index element={<HaulerPostList />} />
-          <Route path=":id" element={<HaulerTripHistory />} />
-          <Route path="create" element={<CreateHaulerPost />} />
-          <Route path="users/find" element={<FindUsers />} />
-          <Route path="haul/posts" element={<UsersPostList />} />
-          <Route path="requests" element={<HaulerTripRequestList />} />
-          <Route path="find" element={<FindTrip />} />
-          <Route path="request/:id" element={<HaulerTripRequest />} />
+          <Route
+            index
+            element={<HaulerProtectedRoute element={<HaulerPostList />} />}
+          />
+          <Route
+            path=":id"
+            element={<HaulerProtectedRoute element={<HaulerTripHistory />} />}
+          />
+          <Route
+            path="create"
+            element={<HaulerProtectedRoute element={<CreateHaulerPost />} />}
+          />
+          <Route
+            path="profile"
+            element={<HaulerProtectedRoute element={<HaulerProfile />} />}
+          />
+          <Route
+            path="users/find"
+            element={<HaulerProtectedRoute element={<FindUsers />} />}
+          />
+          <Route
+            path="haul/posts"
+            element={<HaulerProtectedRoute element={<UsersPostList />} />}
+          />
+          <Route
+            path="requests"
+            element={
+              <HaulerProtectedRoute element={<HaulerTripRequestList />} />
+            }
+          />
+          <Route
+            path="find"
+            element={<HaulerProtectedRoute element={<FindTrip />} />}
+          />
+          <Route
+            path="request/:id"
+            element={<HaulerProtectedRoute element={<HaulerTripRequest />} />}
+          />
         </Route>
       </Routes>
     </>

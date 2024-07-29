@@ -22,6 +22,9 @@ const requestHaulerSchema = new Schema({
   time: {
     type: String,
   },
+  email: {
+    type: String,
+  },
   name: {
     type: String,
   },

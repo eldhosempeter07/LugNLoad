@@ -16,6 +16,7 @@ import {
   GET_REQUEST_HAULERS,
 } from "../../../services/graphql/hauler/haulerRequest.js";
 import HaulerRequestPopup from "../../../components/haulerRequestPopup.jsx";
+import { GET_HAULER_INFO } from "../../../services/graphql/auth/auth.js";
 
 const UsersPostList = () => {
   const [createRequestHauler] = useMutation(CREATE_REQUEST_HAULER, {
@@ -32,6 +33,8 @@ const UsersPostList = () => {
     }
   );
 
+  const { error: haulError, data: haulData } = useQuery(GET_HAULER_INFO);
+
   const [showPopup, setShowPopup] = useState(false);
 
   const handleClosePopup = () => {
@@ -47,7 +50,7 @@ const UsersPostList = () => {
           destination,
           date,
           time,
-          name: "Steve Tom",
+          name: haulData?.getHaulerInfo?.name,
           ...formData,
         },
       },
@@ -68,7 +71,7 @@ const UsersPostList = () => {
   return (
     <div className="bg-body-secondary vh-100">
       <h2 className="text-center secondary-color py-4">
-        <span className="primary-color">H</span>aulers{" "}
+        <span className="primary-color">H</span>auls{" "}
       </h2>
       <Row className="justify-content-center mx-0 ">
         <Col md={9}>

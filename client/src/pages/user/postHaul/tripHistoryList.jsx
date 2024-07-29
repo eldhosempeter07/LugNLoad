@@ -4,6 +4,7 @@ import { ListGroup, Row, Col, Spinner, Alert } from "react-bootstrap";
 import {
   DELETE_POSTHAUL,
   GET_POSTHAULS,
+  GET_USER_POSTHAULS,
 } from "../../../services/graphql/user/haulPost";
 import {
   convertTo12HourFormat,
@@ -12,7 +13,7 @@ import {
 import ModalPopup from "../../../components/Popup.jsx";
 
 const TripHistoryList = () => {
-  const { loading, error, data } = useQuery(GET_POSTHAULS);
+  const { loading, error, data } = useQuery(GET_USER_POSTHAULS);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(false);
 
@@ -28,7 +29,7 @@ const TripHistoryList = () => {
   const [removeHaulPost, { error: deleteError }] = useMutation(
     DELETE_POSTHAUL,
     {
-      refetchQueries: [{ query: GET_POSTHAULS }],
+      refetchQueries: [{ query: GET_USER_POSTHAULS }],
       onCompleted: () => handleClose(),
     }
   );
@@ -45,21 +46,17 @@ const TripHistoryList = () => {
     );
 
   return (
-    <div
-      className={`bg-body-secondary ${
-        data?.getHaulPosts?.length < 2 ? "vh-100" : null
-      }  `}
-    >
+    <div className={`bg-body-secondary  vh-100`}>
       <h2 className="text-center secondary-color py-4">
         <span className="primary-color">M</span>y{" "}
         <span className="primary-color">P</span>
         osts
       </h2>
-      <Row className="justify-content-center mx-0 ">
+      <Row className="justify-content-center mx-0 bg-body-secondary ">
         <Col md={9}>
           <ListGroup>
-            {data?.getHaulPosts?.length !== 0 ? (
-              data?.getHaulPosts?.map((haul) => (
+            {data?.getUserHaulPosts?.length !== 0 ? (
+              data?.getUserHaulPosts?.map((haul) => (
                 <ListGroup.Item key={haul.id} className="my-3  px-4 py-3">
                   <Row className="mt-3 border py-4 my-3 mx-2 px-2">
                     <Col md={5}>

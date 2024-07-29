@@ -19,6 +19,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import {
   CREATE_HAUL_POST,
   GET_POSTHAULS,
+  GET_USER_POSTHAULS,
 } from "../../../services/graphql/user/haulPost";
 import FormRadio from "../../../components/formRadio";
 import ModalPopup from "../../../components/Popup.jsx";
@@ -29,7 +30,7 @@ const CreateHaulPost = () => {
   const navigate = useNavigate();
 
   const handlePopup = () => {
-    navigate("/");
+    navigate("/haul/posts");
   };
   const [items, setItems] = useState([]);
   const [item, setItem] = useState({
@@ -43,7 +44,7 @@ const CreateHaulPost = () => {
   const [disableOptions, setDisableOptions] = useState([]);
 
   const [createHaulPost, { error }] = useMutation(CREATE_HAUL_POST, {
-    refetchQueries: [{ query: GET_POSTHAULS }],
+    refetchQueries: [{ query: GET_USER_POSTHAULS }],
     onCompleted: () => setShowModal(true),
   });
 

@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { ListGroup, Row, Col, Spinner, Alert } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  DELETE_REQUEST_HAUL,
-  GET_REQUEST_HAULS,
-  GET_REQUEST_HAUL_BY_ID,
-} from "../../../services/graphql/user/haulRequest.js";
 import ModalPopup from "../../../components/Popup.jsx";
 import {
   DELETE_REQUEST_HAULER,

@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
+  const isAuthenticated = !!localStorage.getItem("token");
+  const userType = localStorage.getItem("type");
+  const navigate = useNavigate();
+  const [type, setType] = useState("");
+
+  console.log(type);
+  useEffect(() => {
+    setType(localStorage.getItem("type"));
+  }, []);
+
+  const handleLogout = React.useCallback(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    localStorage.removeItem("type");
+    if (type === "User") {
+      navigate("/login");
+    } else {
+      navigate("/hauler-login");
+    }
+  }, [navigate]);
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -18,79 +39,100 @@ const NavBar = () => {
             </li>
           </Nav>
 
-          <Nav className="mx-auto">
-            <NavDropdown
-              title="Hauler"
-              id="navbarScrollingDropdown"
-              className=" primary-color"
-            >
-              <NavDropdown.Item
-                as={Link}
-                to="/hauler"
-                className="text-center text-uppercase fw-bold primary-color"
-              >
-                Haulers Posts
-              </NavDropdown.Item>
-
-              <NavDropdown.Item
-                as={Link}
-                to="/hauler/create"
-                className="text-center text-uppercase fw-bold primary-color"
-              >
+          {isAuthenticated && userType === "User" ? (
+            <Nav className="mx-auto">
+              <Nav.Link className=" text-uppercase" as={Link} to="/haul/posts">
+                Posts
+              </Nav.Link>
+              <Nav.Link className=" text-uppercase" as={Link} to="/haul/create">
                 Create Post
-              </NavDropdown.Item>
+              </Nav.Link>
 
-              <NavDropdown.Item
-                as={Link}
-                to="/hauler/users/find"
-                className="text-center text-uppercase fw-bold primary-color"
-              >
-                Find Users
-              </NavDropdown.Item>
-
-              <NavDropdown.Item
-                as={Link}
-                to="/hauler/requests"
-                className="text-center text-uppercase fw-bold primary-color"
-              >
-                Requests
-              </NavDropdown.Item>
-            </NavDropdown>
-            {/* Hauler  */}
-            <NavDropdown title="User" id="navbarScrollingDropdown">
-              <NavDropdown.Item
-                as={Link}
-                to="/haul/create"
-                className="text-center  text-uppercase fw-bold primary-color"
-              >
-                Create Post
-              </NavDropdown.Item>
-
-              <NavDropdown.Item
+              <Nav.Link
+                className=" text-uppercase"
                 as={Link}
                 to="/requests/find"
-                className="text-center  text-uppercase fw-bold primary-color"
               >
                 Find Haulers
-              </NavDropdown.Item>
+              </Nav.Link>
 
-              <NavDropdown.Item
+              <Nav.Link className=" text-uppercase" as={Link} to="/requests">
+                Requests
+              </Nav.Link>
+
+              <Nav.Link
+                className=" text-uppercase"
                 as={Link}
-                to="/requests"
-                className="text-center  text-uppercase fw-bold primary-color"
+                to="/haul/profile"
+              >
+                Profile
+              </Nav.Link>
+            </Nav>
+          ) : null}
+
+          {isAuthenticated && userType === "Hauler" ? (
+            <Nav className="mx-auto">
+              <Nav.Link
+                className=" text-uppercase"
+                as={Link}
+                to="/hauler/create"
+              >
+                Create Post
+              </Nav.Link>
+              <Nav.Link
+                className=" text-uppercase"
+                as={Link}
+                to="/hauler/users/find"
+              >
+                Find Users
+              </Nav.Link>
+
+              <Nav.Link className=" text-uppercase" as={Link} to="/hauler">
+                Haulers Posts
+              </Nav.Link>
+
+              <Nav.Link
+                className=" text-uppercase"
+                as={Link}
+                to="/hauler/requests"
               >
                 Requests
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-
-          <Nav>
-            <li className="nav-item dropdown">
-              <a className="nav-link " href="#">
+              </Nav.Link>
+              <Nav.Link
+                className=" text-uppercase"
+                as={Link}
+                to="/hauler/profile"
+              >
                 Profile
-              </a>
-            </li>
-          </Nav>
+              </Nav.Link>
+            </Nav>
+          ) : null}
+          {!isAuthenticated ? (
+            <Nav className="mx-auto">
+              <NavDropdown title="Login" className="text-uppercase">
+                <NavDropdown.Item
+                  className="text-uppercase"
+                  as={Link}
+                  to="/login"
+                >
+                  User
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="text-uppercase"
+                  as={Link}
+                  to="/hauler-login"
+                >
+                  Hauler
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          ) : (
+            <Nav>
+              <Nav.Link className=" text-uppercase" onClick={handleLogout}>
+                Logout
+              </Nav.Link>
+            </Nav>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -11,12 +11,12 @@ import {
   CREATE_HAULER_POST,
   GET_HAULERS_POSTS,
 } from "../../../services/graphql/hauler/haulerPost.js";
-import VehicleTypeSelect from "../../../components/vehicleTypeSelect.jsx";
-import { vehicleTypes } from "../../../utils/utils.js";
+import { GET_HAULER_INFO } from "../../../services/graphql/auth/auth.js";
 
 const CreateHaulerPost = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const { loading, error: haulError, data } = useQuery(GET_HAULER_INFO);
 
   const handleClose = () => setShowModal(false);
   const handlePopup = () => navigate("/hauler");
@@ -30,35 +30,36 @@ const CreateHaulerPost = () => {
     origin: Yup.string().required("Origin is required"),
     destination: Yup.string().required("Destination is required"),
     date: Yup.date().required("Date is required"),
-    vehicleCapacity: Yup.number().required("Vehicle capacity is required"),
-    vehicleType: Yup.string().required("Vehicle Type is required"),
     budget: Yup.number().required("Budget is required"),
-    vehiclePlateNumber: Yup.string().required(
-      "Vehicle Plate Number is required"
-    ),
+
     driverName: Yup.string().optional(),
   });
 
   const formik = useFormik({
     initialValues: {
-      driverName: "Steve Tom",
-      driverId: "23fdf31243",
-      vehicleCapacity: 1000,
-      vehicleDimension: "8' x 5' x 4'",
-      vehicleType: "",
       budget: "",
-      vehiclePlateNumber: "DYE2131",
       origin: "",
       destination: "",
       date: new Date().toISOString().split("T")[0],
     },
     validationSchema,
     onSubmit: (values) => {
-      createHaulPost({
-        variables: {
-          haulerPost: { ...values, budget: formik.values.budget.toString() },
-        },
-      });
+      if (data?.getHaulerInfo) {
+        createHaulPost({
+          variables: {
+            haulerPost: {
+              ...values,
+              driverName: data?.getHaulerInfo?.name,
+              driverId: data?.getHaulerInfo?.id,
+              vehicleCapacity: data?.getHaulerInfo?.vehicleCapacity,
+              vehicleDimension: data?.getHaulerInfo?.vehicleDimension,
+              vehiclePlateNumber: data?.getHaulerInfo?.vehiclePlateNumber,
+              vehicleType: data?.getHaulerInfo?.vehicleType,
+              budget: formik.values.budget.toString(),
+            },
+          },
+        });
+      }
     },
   });
 
@@ -87,7 +88,6 @@ const CreateHaulerPost = () => {
                 type="date"
                 label="Date"
               />
-              <VehicleTypeSelect formik={formik} vehicleTypes={vehicleTypes} />
               <FormControl
                 formik={formik}
                 label="Budget"

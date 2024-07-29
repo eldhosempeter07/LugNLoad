@@ -71,3 +71,57 @@ code {
 .margin-left {
   margin-left: 15px;
 }
+
+.auth-container {
+  max-width: 500px;
+}
+
+.login-form {
+  background-color: #f8f9fa;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-link {
+  color: #007bff;
+}
+
+.btn-link:hover {
+  color: #0056b3;
+}
+
+.register-form {
+  background-color: #f8f9fa;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-link {
+  color: #007bff;
+}
+
+.btn-link:hover {
+  color: #0056b3;
+}

@@ -2,8 +2,15 @@ import { PostHaul } from "../../models/PostHaul.js";
 import { PostHauler } from "../../models/PostHauler.js";
 import { RequestHauler } from "../../models/RequestHauler.js";
 import { RequestHaul } from "../../models/RequestHaul.js";
-import { generateUniqueId } from "../../utils/utils.js";
+import {
+  generateUniqueId,
+  hashPassword,
+  verifyPassword,
+} from "../../utils/utils.js";
 import { GraphQLScalarType, Kind } from "graphql";
+import { Hauler, User } from "../../models/User.js";
+import jwt from "jsonwebtoken";
+import { AuthenticationError } from "apollo-server-express";
 
 const GQLDate = new GraphQLScalarType({
   name: "GQLDateTime",
@@ -45,8 +52,23 @@ const GQLDate = new GraphQLScalarType({
 export const resolvers = {
   GQLDate,
   Query: {
-    getHaulPosts: async () => {
+    getUserInfo: async (_, __, { user }) => {
+      try {
+        console.log(user);
+        const userInfo = await User.findOne({ email: user?.email });
+        return userInfo;
+      } catch (error) {
+        return { message: error };
+      }
+    },
+
+    getHaulPosts: async (_, __) => {
       const postHauls = await PostHaul.find();
+      return postHauls;
+    },
+
+    getUserHaulPosts: async (_, __, { user }) => {
+      const postHauls = await PostHaul.find({ email: user.email });
       return postHauls;
     },
     getHaulPostByID: async (_, { id }) => {
@@ -92,6 +114,11 @@ export const resolvers = {
       }
     },
 
+    getUserHaulerPosts: async (_, __, { user }) => {
+      const postHauls = await PostHauler.find({ email: user.email });
+      return postHauls;
+    },
+
     getHaulerPosts: async () => {
       const postHauls = await PostHauler.find();
       return postHauls;
@@ -101,9 +128,9 @@ export const resolvers = {
       return postHaul;
     },
 
-    getRequestHaulers: async () => {
+    getRequestHaulers: async (_, __, { user }) => {
       try {
-        const requestHaulers = await RequestHauler.find();
+        const requestHaulers = await RequestHauler.find({ email: user.email });
         return requestHaulers;
       } catch (error) {
         throw new Error(error);
@@ -120,10 +147,22 @@ export const resolvers = {
         throw new Error(error);
       }
     },
+
+    getHaulerInfo: async (_, __, { user }) => {
+      try {
+        console.log(user);
+        const haulerInfo = await Hauler.findOne({ email: user?.email });
+        console.log("haulerInfo", haulerInfo);
+        return haulerInfo;
+      } catch (error) {
+        return { message: error };
+      }
+    },
   },
   Mutation: {
-    createHaulPost: async (_, { haulPost }) => {
+    createHaulPost: async (_, { haulPost }, { user }) => {
       haulPost.id = generateUniqueId();
+      haulPost.email = user.email;
       const postHauls = await PostHaul.create(haulPost);
       return postHauls;
     },
@@ -133,9 +172,10 @@ export const resolvers = {
       return removedpostedHaul;
     },
 
-    createRequestHaul: async (_, { haul }) => {
+    createRequestHaul: async (_, { haul }, { user }) => {
       try {
         haul.id = generateUniqueId();
+        haul.email = user.email;
         const newRequestHaul = await RequestHaul.create(haul);
         return newRequestHaul;
       } catch (error) {
@@ -154,8 +194,9 @@ export const resolvers = {
       }
     },
 
-    createHaulerPost: async (_, { haulerPost }) => {
+    createHaulerPost: async (_, { haulerPost }, { user }) => {
       haulerPost.id = generateUniqueId();
+      haulerPost.email = user.email;
       const postHauls = await PostHauler.create(haulerPost);
       return postHauls;
     },
@@ -165,8 +206,9 @@ export const resolvers = {
       return removedpostedHaul;
     },
 
-    createRequestHauler: async (_, { hauler }) => {
+    createRequestHauler: async (_, { hauler }, { user }) => {
       try {
+        hauler.email = user.email;
         hauler.id = generateUniqueId();
         const newRequestHaul = await RequestHauler.create(hauler);
         return newRequestHaul;
@@ -183,6 +225,123 @@ export const resolvers = {
         return deletedRequestHaul;
       } catch (error) {
         throw new Error(error);
+      }
+    },
+
+    createHauler: async (_, { hauler }) => {
+      const HaulerData = await Hauler.findOne({ email: hauler?.email });
+      if (HaulerData) {
+        return { message: "Already registered with this email" };
+      }
+      const haulerInfo = new Hauler(hauler);
+      const password = await hashPassword(hauler.password);
+      haulerInfo.password = password;
+      await haulerInfo.save();
+      return haulerInfo;
+    },
+
+    haulerLogin: async (_, { hauler }) => {
+      try {
+        const loginHauler = await Hauler.findOne({
+          email: hauler?.email,
+        });
+
+        if (loginHauler != null) {
+          const password = await verifyPassword(
+            hauler.password,
+            loginHauler.password
+          );
+          if (password) {
+            const token = jwt.sign(
+              { email: hauler?.email },
+              process.env.JWT_SECRET,
+              { expiresIn: "10h" }
+            );
+            return {
+              user: loginHauler,
+              token,
+              type: "Hauler",
+              message: "Sucessfully logged in",
+            };
+          } else {
+            throw new AuthenticationError("Incorrect Password");
+          }
+        } else {
+          throw new AuthenticationError("Incorrect Username");
+        }
+      } catch (error) {
+        return { message: error };
+      }
+    },
+
+    updateHauler: async (_, { hauler }) => {
+      try {
+        const updatedUser = await Hauler.findOneAndUpdate(
+          { email: hauler?.email },
+          hauler
+        );
+        return updatedUser;
+      } catch (error) {
+        return { message: error };
+      }
+    },
+
+    // User
+    registerUser: async (_, { user }) => {
+      try {
+        const UserInfo = await User.findOne({ email: user?.email });
+        if (UserInfo) {
+          return { message: "Already registered with this email" };
+        }
+        const password = await hashPassword(user.password);
+        user.password = password;
+        const newUser = await User.create(user);
+        return newUser;
+      } catch (error) {
+        return { message: error };
+      }
+    },
+
+    loginUser: async (_, { user }) => {
+      try {
+        const loginUser = await User.findOne({ email: user?.email });
+        if (loginUser != null) {
+          const password = await verifyPassword(
+            user.password,
+            loginUser.password
+          );
+          if (password) {
+            const token = jwt.sign(
+              { email: user?.email },
+              process.env.JWT_SECRET,
+              { expiresIn: "10h" }
+            );
+            return {
+              user: loginUser,
+              token,
+              type: "User",
+              message: "Sucessfully logged in",
+            };
+          } else {
+            throw new AuthenticationError("Incorrect Password");
+          }
+        } else {
+          throw new AuthenticationError("Incorrect Username");
+        }
+      } catch (error) {
+        return { message: error };
+      }
+    },
+
+    updateUser: async (_, { user }) => {
+      try {
+        const updatedUser = await User.findOneAndUpdate(
+          { email: user?.email },
+          user
+        );
+        return updatedUser;
+      } catch (error) {
+        return { message: error };
       }
     },
   },

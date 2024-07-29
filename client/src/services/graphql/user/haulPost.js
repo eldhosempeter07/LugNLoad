@@ -1,9 +1,25 @@
 import { gql } from "@apollo/client";
 
-// GraphQL Queries and Mutations
 export const GET_POSTHAULS = gql`
   query GetHaulPosts {
     getHaulPosts {
+      id
+      origin
+      destination
+      date
+      time
+      vehicleType
+      shared
+      seat
+      message
+      created
+    }
+  }
+`;
+
+export const GET_USER_POSTHAULS = gql`
+  query GetUserHaulPosts {
+    getUserHaulPosts {
       id
       origin
       destination

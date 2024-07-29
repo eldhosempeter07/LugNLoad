@@ -6,6 +6,7 @@ const PostHaulSchema = new Schema({
   id: { type: Number, index: true, required: true },
   origin: { type: String, required: true },
   destination: { type: String, required: true },
+  email: { type: String, required: true },
   date: { type: Date, required: true },
   time: { type: String, required: true },
   message: { type: String },

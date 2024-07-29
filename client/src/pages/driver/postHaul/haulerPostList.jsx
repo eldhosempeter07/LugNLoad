@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ListGroup, Row, Col, Card } from "react-bootstrap";
 import { haulInfo } from "../../../utils/utils";
 import { useMutation, useQuery } from "@apollo/client";
-
+import Dummy from "../../../utils/pics/user.jpg";
 import {
   DELETE_POSTHAULER,
   GET_HAULERS_POSTS,
@@ -10,7 +10,6 @@ import {
 import ModalPopup from "../../../components/Popup.jsx";
 
 const HaulerPostList = () => {
-  const [randomProfilePics, setRandomProfilePics] = useState([]);
   const { data } = useQuery(GET_HAULERS_POSTS);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(false);
@@ -32,40 +31,40 @@ const HaulerPostList = () => {
     }
   );
 
-  useEffect(() => {
-    fetchRandomProfilePics();
-  }, []);
+  // useEffect(() => {
+  //   fetchRandomProfilePics();
+  // }, []);
 
-  const fetchRandomProfilePics = () => {
-    Promise.all(
-      haulInfo.map((haul) =>
-        fetch("https://randomuser.me/api/")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => data.results[0].picture.large)
-          .catch((error) => {
-            console.error(
-              "There was a problem fetching the profile picture:",
-              error
-            );
-            return null;
-          })
-      )
-    )
-      .then((pics) => {
-        setRandomProfilePics(pics);
-      })
-      .catch((error) => {
-        console.error(
-          "There was a problem fetching profile pictures for all items:",
-          error
-        );
-      });
-  };
+  // const fetchRandomProfilePics = () => {
+  //   Promise.all(
+  //     haulInfo.map((haul) =>
+  //       fetch("https://randomuser.me/api/")
+  //         .then((response) => {
+  //           if (!response.ok) {
+  //             throw new Error("Network response was not ok");
+  //           }
+  //           return response.json();
+  //         })
+  //         .then((data) => data.results[0].picture.large)
+  //         .catch((error) => {
+  //           console.error(
+  //             "There was a problem fetching the profile picture:",
+  //             error
+  //           );
+  //           return null;
+  //         })
+  //     )
+  //   )
+  //     .then((pics) => {
+  //       setRandomProfilePics(pics);
+  //     })
+  //     .catch((error) => {
+  //       console.error(
+  //         "There was a problem fetching profile pictures for all items:",
+  //         error
+  //       );
+  //     });
+  // };
 
   return (
     <div className="bg-body-secondary vh-100">
@@ -74,7 +73,7 @@ const HaulerPostList = () => {
         <span className="primary-color">P</span>
         osts
       </h2>
-      <Row className="justify-content-center mx-0">
+      <Row className="justify-content-center mx-0 ">
         <Col md={9}>
           <ListGroup>
             {data?.getHaulerPosts?.length !== 0 ? (
@@ -86,13 +85,9 @@ const HaulerPostList = () => {
                   <Card>
                     <Row className="p-3">
                       <Col sm={4} md={2} className="d-flex align-items-center">
-                        {randomProfilePics[index] && (
-                          <Card.Img
-                            variant="top"
-                            src={randomProfilePics[index]}
-                            alt={`Random Profile Pic ${index}`}
-                          />
-                        )}
+                        {/* {randomProfilePics[index] && ( */}
+                        <Card.Img variant="top" src={Dummy} alt="User" />
+                        {/* )} */}
                       </Col>
                       <Col md={8}>
                         <Card.Body>

@@ -132,22 +132,98 @@ input HaulerPostInput {
   date: GQLDate!
 }
 
+# User
+
+type User {
+  name: String
+  email: String
+}
+
+type UserProfile {
+  email: String
+  phone: String
+  name: String
+  address: String
+}
+
+input UserProfileInput {
+  email: String!
+  phone: String
+  name: String
+  address: String
+}
+
+input UserInput {
+  name: String
+  email: String!
+  password: String!
+  address: String
+}
+
+input UserLoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginData {
+  user: User
+  token: String
+  message: String
+  type: String
+}
+
+input CreateHaulerInput {
+  name: String!
+  email: String!
+  image: String
+  type: String
+  phone: String
+  password: String!
+  address: String
+  license: String!
+  vehicleDimension: String!
+  vehicleCapacity: Float!
+  vehicleType: String!
+  vehiclePlateNumber: String!
+}
+
+type Hauler {
+  id: ID!
+  status: String
+  name: String!
+  email: String!
+  image: String
+  type: String
+  phone: String
+  password: String!
+  address: String
+  license: String!
+  vehicleDimension: String!
+  vehicleCapacity: Float!
+  vehicleType: String!
+  vehiclePlateNumber: String!
+}
+
 type Query {
   getHaulPosts: [HaulPost!]!
+  getUserHaulPosts: [HaulPost!]!
   getHaulPostByID(id: Int!): HaulPost!
 
   getRequestHauls: [RequestHaul]!
   getRequestHaulById(id: Int!): RequestHaul
   getRequestHaulByFilter(haul: RequestHaulSearchInput): [RequestHaul]!
+  getUserInfo: UserProfile!
 
   # Hauler
 
   getHaulerPosts: [HaulerPost!]!
+  getUserHaulerPosts: [HaulerPost!]!
   getHaulerPostByID(id: Int!): HaulerPost
 
   getRequestHaulers: [RequestHauler]!
   getRequestHaulerById(id: Int!): RequestHauler
   getRequestHaulersByFilter(hauler: CreateRequestHaulerInput): [RequestHauler]!
+  getHaulerInfo: Hauler!
 }
 
 type Mutation {
@@ -163,6 +239,14 @@ type Mutation {
 
   createRequestHauler(hauler: CreateRequestHaulerInput!): RequestHauler!
   deleteRequestHauler(id: Int!): RequestHauler
+
+  registerUser(user: UserInput): User
+  loginUser(user: UserLoginInput): LoginData
+  updateUser(user: UserProfileInput): UserProfile
+
+  haulerLogin(hauler: UserLoginInput!): LoginData!
+  createHauler(hauler: CreateHaulerInput!): Hauler!
+  updateHauler(hauler: CreateHaulerInput): Hauler
 }
 
 scalar GQLDate
