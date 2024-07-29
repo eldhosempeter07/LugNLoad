@@ -11,6 +11,11 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { setContext } from "@apollo/client/link/context";
 
+const backendURL =
+  process.env.NODE_ENV === "production"
+    ? process.env.REACT_APP_BACKEND_PROD_URL
+    : process.env.REACT_APP_BACKEND_URL;
+
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("token");
   return {
@@ -22,7 +27,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: process.env.REACT_APP_BACKEND_URL,
+  uri: backendURL,
 });
 
 const client = new ApolloClient({
